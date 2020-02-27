@@ -1,16 +1,24 @@
 const express = require('express')
+const mongoose = require('mongoose')
 
 const app = express()
 
-app.use((req, res, next) => {
-    console.log('In the middleware!')
-    next()
+const uridb = require("./global/uridb")
+
+mongoose.connect(uridb, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+    })
+
+mongoose.connection.on("error", (err) => {
+    console.log("> Error: ", err)
 })
 
-app.use((req, res, next) => {
-    console.log('In another middleware')
-    res.send("<h1>Hola</h1>")
+mongoose.connection.on("connected", (err, res) => {
+    console.log("> DB connected")
 })
 
 
-app.listen(3000)
+app.listen(3000, () => {
+    console.log("> Server running!")
+})
