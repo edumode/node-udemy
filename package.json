@@ -1,0 +1,26 @@
+{
+  "name": "node-udemy",
+  "version": "0.0.1",
+  "description": "Node Udemy Course",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edumode/node-udemy.git"
+  },
+  "author": "Cesar Vasquez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edumode/node-udemy/issues"
+  },
+  "homepage": "https://github.com/edumode/node-udemy#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
