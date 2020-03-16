@@ -1,25 +1,51 @@
+const jwt = require("jsonwebtoken")
+
 const Users = require("./../models/users")
+const secret = require("./../global/jwt_secret")
 
 const createUser = (req, res) => {
 
-    var user = req.body
-    
-    var newUser = new Users(user)
+    var userToCreate = req.body
 
-    newUser.save(function(err, user){
-        if(err) return console.error(err)
+    Users.find({email: req.body.email}, (err, user) => {
+        if(err) { return res.status(404).send({ err }) }
 
-        res.status(200).send({ message: "User created successfully!", user})
+        if(user.length > 0){ 
+                res.status(403).send({ message: "User already exists" })
+            } else {
+            var newUser = new Users(userToCreate)
+
+            newUser.save(function(err, user){
+                if(err) return console.log(err)
+
+                res.status(200).send({ message: "User created successfully!", user})
+            })
+        }
     })
 }
 
 const loginUser = (req, res) => {
-    var userId = req.body.userId
+    var userEmail = req.body.email
+    var password = req.body.password
 
-    Users.findById(userId, (err, user) => { 
-        if(err) { res.status(404).send({ err }) }
+    if(!userEmail){
+        return res.send({ message: "Provide an email address" })
+    }
 
-        res.status(200).send({ message: "Logged successfully", user })
+    Users.find({email: userEmail}, (err, user) => { 
+        if(err) { return res.status(404).send({ err }) }
+        if(user.length === 0) { return res.status(404).send({ message: "User not found" }) }
+        if(user[0].password !== password) { return res.send({ message: "Incorrect Password" }) }
+
+        const payload = {
+            check:  true
+        }
+
+        const token = jwt.sign(payload, secret, {
+            expiresIn: 144
+        }) 
+
+        res.status(200).send({ message: "Logged successfully", user: user[0], token })
        })
 }
 
