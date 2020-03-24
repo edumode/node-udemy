@@ -1,11 +1,15 @@
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
 
 const Users = require("./../models/users")
 const secret = require("./../global/jwt_secret")
 
 const createUser = (req, res) => {
 
-    var userToCreate = req.body
+    var userToCreate = {
+        userName: req.body.userName,
+        email: req.body.email
+    } 
 
     Users.find({email: req.body.email}, (err, user) => {
         if(err) { return res.status(404).send({ err }) }
@@ -13,12 +17,16 @@ const createUser = (req, res) => {
         if(user.length > 0){ 
                 res.status(403).send({ message: "User already exists" })
             } else {
-            var newUser = new Users(userToCreate)
+            
+            bcrypt.hash(req.body.password, 10, function(err, hash){
+                userToCreate.password = hash
+                var newUser = new Users(userToCreate)
 
-            newUser.save(function(err, user){
-                if(err) return console.log(err)
+                newUser.save(function(err, user){
+                    if(err) return console.log(err)
 
-                res.status(200).send({ message: "User created successfully!", user})
+                    res.status(200).send({ message: "User created successfully!", user})
+                })
             })
         }
     })
@@ -35,18 +43,24 @@ const loginUser = (req, res) => {
     Users.find({email: userEmail}, (err, user) => { 
         if(err) { return res.status(404).send({ err }) }
         if(user.length === 0) { return res.status(404).send({ message: "User not found" }) }
-        if(user[0].password !== password) { return res.send({ message: "Incorrect Password" }) }
+       
+        bcrypt.compare(password, user[0].password,  function(err, match){
+            if(match){
+                const payload = {
+                    check:  true
+                }
+        
+                const token = jwt.sign(payload, secret, {
+                    expiresIn: 144444
+                }) 
+        
+                res.status(200).send({ message: "Logged successfully", user: user[0], token })
+            }else{
+                return res.status(404).send({message: "Incorrect Password", err})
+            }
+        })
 
-        const payload = {
-            check:  true
-        }
-
-        const token = jwt.sign(payload, secret, {
-            expiresIn: 144
-        }) 
-
-        res.status(200).send({ message: "Logged successfully", user: user[0], token })
-       })
+    })
 }
 
 const getUsers = (req, res) => {
