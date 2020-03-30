@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const Schema = moongoose.Schema
+const Schema = mongoose.Schema
 
 const productSchema = new Schema({
     productName: { type: String, required: true },
@@ -8,10 +8,9 @@ const productSchema = new Schema({
     gender: { type: String, required: true },
     category: { type: String, required: true },
     price: { type: Number, required: true },
-    sizes: [{ type: String, required: true }],
-    stock: { type: Number, required: true },
-    gallery: [{ type: String, required: false }],
+    details: [],
+    gallery: [],
     active: { type: Boolean, required: true }
 })
 
-module.exports = mongoose.model("Product", productSchema)
+module.exports = mongoose.model("Products", productSchema)

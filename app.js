@@ -5,10 +5,12 @@ const bodyParser = require('body-parser')
 const app = express()
 
 const userRoute = require("./routes/users.js")
+const productsRoute = require("./routes/products")
 
 const uri = require("./global/uridb")
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -22,6 +24,7 @@ app.use((req, res, next) => {
 
 
 app.use("/user", userRoute)
+app.use("/product", productsRoute)
 
 
 mongoose.connect(uri, {
