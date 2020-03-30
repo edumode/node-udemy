@@ -40,27 +40,29 @@ const loginUser = (req, res) => {
         return res.send({ message: "Provide an email address" })
     }
 
-    Users.find({email: userEmail}, (err, user) => { 
-        if(err) { return res.status(404).send({ err }) }
-        if(user.length === 0) { return res.status(404).send({ message: "User not found" }) }
-       
-        bcrypt.compare(password, user[0].password,  function(err, match){
-            if(match){
-                const payload = {
-                    check:  true
+    Users.find({email: userEmail})
+        .populate("purchases")
+        .exec((err, user) => { 
+            if(err) { return res.status(404).send({ err }) }
+            if(user.length === 0) { return res.status(404).send({ message: "User not found" }) }
+           
+            bcrypt.compare(password, user[0].password,  function(err, match){
+                if(match){
+                    const payload = {
+                        check:  true
+                    }
+            
+                    const token = jwt.sign(payload, secret, {
+                        expiresIn: 144444
+                    }) 
+            
+                    res.status(200).send({ message: "Logged successfully", user: user[0], token })
+                }else{
+                    return res.status(404).send({message: "Incorrect Password", err})
                 }
-        
-                const token = jwt.sign(payload, secret, {
-                    expiresIn: 144444
-                }) 
-        
-                res.status(200).send({ message: "Logged successfully", user: user[0], token })
-            }else{
-                return res.status(404).send({message: "Incorrect Password", err})
-            }
+            })
+    
         })
-
-    })
 }
 
 const getUsers = (req, res) => {

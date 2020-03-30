@@ -4,8 +4,9 @@ const bodyParser = require('body-parser')
 
 const app = express()
 
-const userRoute = require("./routes/users.js")
+const userRoute = require("./routes/users")
 const productsRoute = require("./routes/products")
+const purchaseRoute = require("./routes/purchases")
 
 const uri = require("./global/uridb")
 
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 
 app.use("/user", userRoute)
 app.use("/product", productsRoute)
+app.use("/purchase", purchaseRoute)
 
 
 mongoose.connect(uri, {
