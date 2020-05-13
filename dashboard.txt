@@ -1,0 +1,19 @@
+Dashboard
+
+Product administration
+  - Add, delete, remove and view
+  - Add, delete, remove categories	
+
+User adiministation
+  - Change roles
+  - Block user
+
+Comments administration
+  - View comments
+  - Reply comments
+
+Charts 
+  - Most visited product
+  - Sales per product
+  - Sales per category
+  - Sales per user

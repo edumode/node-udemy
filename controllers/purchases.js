@@ -14,14 +14,7 @@ const addPurchase = (req, res) => {
 
     var purchaseInfo = req.body
 
-    var totalPrice = 0
     var purchaseNumber = gen()
-
-    for(var i = 0; i < purchaseInfo.productCodes.length; i++){
-        totalPrice = (purchaseInfo.productCodes[i].quantity * purchaseInfo.productCodes[i].unitPrice) + totalPrice
-    }
-
-    purchaseInfo.totalPrice = totalPrice
     purchaseInfo.purchaseNumber = purchaseNumber
 
     var purchase = new Purchase( purchaseInfo )
@@ -35,7 +28,7 @@ const addPurchase = (req, res) => {
             function(err, updated) {
                 if(err) { return res.send(err) }
 
-                return res.status(200).send({ message: "Purchase completed", purchase })
+                return res.status(200).send({ message: "Purchase completed", purchase, success: true })
             }
         )
     })

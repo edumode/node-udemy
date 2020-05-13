@@ -5,7 +5,8 @@ const secret = require("../global/jwt_secret")
 const verifyToken = (req, res, next) => {
 
     var token = req.headers["access-token"]
-    
+    var role = req.headers["role"]
+    console.log(role)
 
    if(token){
         jwt.verify(token, secret, (err, decoded) => {
